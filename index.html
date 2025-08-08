@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio moderno · Mario Chaparro</title>
+  <meta name="description" content="Web moderna y dinámica con acordeón de proyectos, animaciones y formulario funcional." />
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================
+       SISTEMA DE COLORES
+       ===================== */
+    :root{
+      /* Paleta: principal basada en #436A65 */
+      --brand: #436A65;             /* principal */
+      --brand-700:#385d59;          /* hover/contraste */
+      --brand-100:#e7f0ef;          /* fondos suaves */
+      --accent:#F5A524;             /* acento cálido (botones secundarios) */
+      --ink:#111418;                /* texto principal */
+      --muted:#5b646a;              /* texto secundario */
+      --bg:#0b0d10;                 /* fondo base para degradados */
+      --card:#ffffff;               /* fondo tarjetas */
+      --radius:18px;
+      --shadow:0 12px 40px rgba(0,0,0,.10);
+      --maxw:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%; color:var(--ink);}
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background: var(--bg);}
+
+    /* =====================
+       FONDO CON DEGRADADOS + RUIDO
+       ===================== */
+    .bg-gradient{
+      position: fixed; inset:0; z-index:-2;
+      /* Degradado moderno con manchas suaves tipo glassmorphism */
+      background:
+        radial-gradient(1200px 600px at 15% 10%, rgba(67,106,101,.45), transparent 60%),
+        radial-gradient(800px 500px at 85% 20%, rgba(245,165,36,.35), transparent 60%),
+        radial-gradient(900px 700px at 70% 85%, rgba(67,106,101,.35), transparent 60%),
+        linear-gradient(180deg, #101419 0%, #0b0d10 100%);
+      filter: saturate(110%);
+    }
+    /* Capa de ruido sutil (SVG con feTurbulence) */
+    .noise{ position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.065; mix-blend-mode: overlay; }
+
+    /* =====================
+       LAYOUT GENERALES
+       ===================== */
+    .container{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+    .nav{position:sticky; top:0; z-index:50; backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid rgba(255,255,255,.08);}
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:12px 0}
+
+    .logo{display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff}
+    .logo-mark{width:38px; height:38px; border-radius:50%; background: var(--brand); color:#fff; display:grid; place-items:center; font-weight:800; font-family:Montserrat, sans-serif}
+    .logo-title{font-family:Montserrat, sans-serif; font-weight:800; letter-spacing:.3px}
+
+    .nav-list{display:flex; gap:18px; list-style:none; margin:0; padding:0}
+    .nav-list a{color:#dfe6e6; text-decoration:none; font-weight:600}
+    .nav-list a:hover{color:#fff}
+
+    .nav-toggle{display:none}
+
+    /* HERO */
+    .hero{color:#fff; padding:86px 0 64px}
+    .hero-grid{display:grid; gap:36px; align-items:center; grid-template-columns: 1.2fr .8fr}
+    .kicker{color:var(--brand-100); font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.9rem}
+    h1{font-family:Montserrat, sans-serif; font-weight:800; font-size:clamp(2.2rem, 1.2rem + 3.5vw, 4rem); line-height:1.05; margin:.4rem 0 1rem}
+    .subtitle{font-family:"Merriweather", serif; color:#dbe3e3; font-size:1.1rem; line-height:1.7}
+    .cta{display:flex; gap:12px; margin-top:26px; flex-wrap:wrap}
+    .btn{appearance:none; border:none; padding:14px 18px; border-radius:14px; cursor:pointer; font-weight:800; text-decoration:none; display:inline-block}
+    .btn-primary{background:#fff; color:#0f1414}
+    .btn-primary:hover{filter:brightness(.9)}
+    .btn-ghost{background:transparent; color:#fff; border:2px solid rgba(255,255,255,.25)}
+    .btn-ghost:hover{border-color:#fff}
+
+    /* Foto hero (opcional: coloca tu PNG redondo) */
+    .avatar{display:grid; place-items:center}
+    .avatar-img{width:320px; height:320px; border-radius:50%; object-fit:cover; box-shadow: var(--shadow); filter: drop-shadow(0 10px 30px rgba(0,0,0,.25)); clip-path: circle(50% at 50% 50%);}
+    .avatar-fallback{width:320px; height:320px; border-radius:50%; display:grid; place-items:center; font-family:Montserrat, sans-serif; font-weight:800; background: radial-gradient(100% 100% at 30% 20%, #4f7c77, #2a3f3d);}
+
+    /* SECCIONES */
+    section{padding:72px 0; color:var(--ink)}
+    .section-head h2{font-family:Montserrat, sans-serif; font-weight:800; font-size:2rem; margin:0 0 8px; color:#fff}
+    .section-sub{font-family:"Merriweather", serif; color:#cbd5d6; margin:0 0 26px}
+
+    /* Tarjetas / contenido */
+    .grid{display:grid; gap:18px}
+    .cols-3{grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))}
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.18); border-radius:var(--radius); padding:20px; box-shadow: var(--shadow)}
+    .card h3{font-family:Montserrat, sans-serif; margin:6px 0 8px}
+    .card p{color:#334}
+
+    /* SERVICIOS */
+    .list{padding-left:18px; margin:0}
+    .list li{margin:.35rem 0}
+
+    /* ACORDEÓN DE PROYECTOS */
+    .accordion{display:grid; gap:16px}
+    .acc-item{border:1px solid rgba(255,255,255,.18); border-radius:18px; background: rgba(255,255,255,.9); overflow:hidden; box-shadow: var(--shadow)}
+    .acc-toggle{all:unset; display:grid; grid-template-columns:120px 1fr auto; align-items:center; gap:16px; padding:14px; cursor:pointer}
+    .acc-toggle:focus{outline:2px solid var(--brand); outline-offset:2px; border-radius:12px}
+    .acc-cover{width:120px; height:80px; border-radius:12px; background: #dfe6e6 center/cover no-repeat; background-image: var(--bgimg)}
+    .acc-summary h3{margin:.2rem 0 .2rem; font-family:Montserrat, sans-serif; color:#0e1414}
+    .acc-summary p{margin:0; color:#425}
+    .acc-icon{font-size:1.4rem; color:var(--brand); transition: transform .25s ease}
+    .acc-panel{max-height:0; overflow:hidden; transition:max-height .35s ease, padding .25s ease; padding:0 14px}
+    .acc-panel.open{padding:0 14px 14px}
+
+    /* FORMULARIO */
+    .form{display:grid; gap:12px; max-width:640px}
+    .form label{display:grid; gap:6px; color:#e7eeee}
+    .form input,.form textarea{padding:12px 14px; border-radius:12px; border:1px solid #dfe6e6; font:inherit}
+    .hint{color:#cbd5d6}
+
+    /* FOOTER */
+    .footer{border-top:1px solid rgba(255,255,255,.12); color:#cbd5d6; padding:26px 0}
+    .footer .row{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+    .social{display:flex; gap:12px; list-style:none; margin:0; padding:0}
+    .social a{color:#cbd5d6; text-decoration:none}
+    .social a:hover{color:#fff}
+
+    /* REVEAL ON SCROLL */
+    .reveal{opacity:0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease}
+    .reveal.visible{opacity:1; transform: translateY(0)}
+
+    /* RESPONSIVE */
+    @media (max-width: 900px){
+      .hero-grid{grid-template-columns:1fr}
+      .avatar{order:-1}
+    }
+    @media (max-width: 780px){
+      .nav-list{display:none}
+      .nav-toggle{display:block; background:transparent; border:0; color:#fff; font-size:1.25rem}
+      .mobile{display:flex; flex-direction:column; gap:10px; padding:10px 0}
+      .mobile a{color:#dfe6e6; text-decoration:none; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.08)}
+    }
+  </style>
+</head>
+<body>
+  <!-- Capas de fondo: degradados + ruido -->
+  <div class="bg-gradient" aria-hidden="true"></div>
+  <!-- SVG de ruido superpuesto (feTurbulence) -->
+  <svg class="noise" xmlns="http://www.w3.org/2000/svg">
+    <filter id="n" x="0" y="0">
+      <feTurbulence baseFrequency="0.75" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+    </filter>
+    <rect width="100%" height="100%" filter="url(#n)"></rect>
+  </svg>
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="logo" href="#hero">
+        <span class="logo-mark" aria-hidden="true">MC</span>
+        <span class="logo-title">Mario Chaparro</span>
+      </a>
+      <nav aria-label="Principal">
+        <ul class="nav-list">
+          <li><a href="#sobre-mi">Sobre mí</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="menu">☰</button>
+    </div>
+    <div id="menu" class="container mobile" hidden>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+  </header>
+
+  <!-- HERO (puedes reemplazar el div avatar-fallback por <img class="avatar-img" src="tu-imagen.png">) -->
+  <section id="hero" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy reveal">
+        <p class="kicker">Marketing · Estrategia · Contenido</p>
+        <h1>Una web moderna, dinámica y lista para crecer</h1>
+        <p class="subtitle">Minimalista, rápida y accesible. Animaciones suaves, proyectos en acordeón y un formulario listo para funcionar sin backend.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#proyectos">Ver proyectos</a>
+          <a class="btn btn-ghost" href="#contacto">Hablemos</a>
+        </div>
+      </div>
+      <div class="avatar reveal">
+        <img class="avatar-img" src="foto-de-perfil-rounded.png" alt="Foto de perfil">
+      </div>
+    </div>
+  </section>
+
+  <main id="main">
+    <!-- SOBRE MI -->
+    <section id="sobre-mi">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2>Sobre mí</h2>
+          <p class="section-sub">Estrategia, contenido y analítica. Trabajo con foco en impacto real.</p>
+        </header>
+        <div class="grid cols-3">
+          <article class="card reveal">
+            <h3>Cómo pienso</h3>
+            <p>Hipótesis → experimento → aprendizaje. Validación rápida y decisiones con datos.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Qué hago</h3>
+            <p>Estrategia 360º, social & influencers, SEO de contenidos y reporting entendible.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Cómo trabajo</h3>
+            <p>Entrega clara, comunicación honesta y métricas que importan a negocio.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICIOS -->
+    <section id="servicios">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2>Servicios</h2>
+          <p class="section-sub">Lo que puedo aportar a tu proyecto.</p>
+        </header>
+        <div class="grid cols-3">
+          <article class="card reveal">
+            <h3>Estrategia & Go-to-Market</h3>
+            <ul class="list">
+              <li>Propuesta de valor</li>
+              <li>Arquitectura de contenidos</li>
+              <li>Calendario editorial</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <h3>Social, Influencia & Paid</h3>
+            <ul class="list">
+              <li>Campañas nativas</li>
+              <li>Selección de creadores</li>
+              <li>Medición y optimización</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <h3>SEO & Analítica</h3>
+            <ul class="list">
+              <li>Auditoría técnica</li>
+              <li>Clusterización temática</li>
+              <li>Dashboards accionables</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROYECTOS (ACORDEÓN) -->
+    <section id="proyectos">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2>Proyectos</h2>
+          <p class="section-sub">Tarjetas desplegables: toca para ver el detalle.</p>
+        </header>
+        <div class="accordion">
+          <!-- Proyecto 1 -->
+          <article class="acc-item reveal">
+            <button class="acc-toggle" aria-expanded="false" aria-controls="p1" id="btn-p1">
+              <div class="acc-cover" style="--bgimg: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 300 200\'><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%23436A65\'/><stop offset=\'100%\' stop-color=\'%23F5A524\'/></linearGradient></defs><rect width=\'300\' height=\'200\' fill=\'url(%23g)\'/></svg>')"></div>
+              <div class="acc-summary"><h3>Campaña local con influencia</h3><p>Activación junto a evento musical cercano a tienda.</p></div>
+              <span class="acc-icon" aria-hidden="true">+</span>
+            </button>
+            <div id="p1" class="acc-panel" role="region" aria-labelledby="btn-p1">
+              <p>Concepto, producción y medición. Incremento de ventas en SKUs promocionados y alto alcance orgánico.</p>
+              <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver caso</a>
+            </div>
+          </article>
+
+          <!-- Proyecto 2 -->
+          <article class="acc-item reveal">
+            <button class="acc-toggle" aria-expanded="false" aria-controls="p2" id="btn-p2">
+              <div class="acc-cover" style="--bgimg: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 300 200\'><defs><radialGradient id=\'g2\' cx=\'50%\' cy=\'50%\' r=\'70%\'><stop offset=\'0%\' stop-color=\'%23F5A524\'/><stop offset=\'100%\' stop-color=\'%23436A65\'/></radialGradient></defs><rect width=\'300\' height=\'200\' fill=\'url(%23g2)\'/></svg>')"></div>
+              <div class="acc-summary"><h3>Estrategia de contenido B2C</h3><p>Sistema de guiones y mejoras de producción.</p></div>
+              <span class="acc-icon" aria-hidden="true">+</span>
+            </button>
+            <div id="p2" class="acc-panel" role="region" aria-labelledby="btn-p2">
+              <p>Plan editorial + playbooks. Mayor consistencia y velocidad sin perder calidad.</p>
+              <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver caso</a>
+            </div>
+          </article>
+
+          <!-- Proyecto 3 -->
+          <article class="acc-item reveal">
+            <button class="acc-toggle" aria-expanded="false" aria-controls="p3" id="btn-p3">
+              <div class="acc-cover" style="--bgimg: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 300 200\'><defs><linearGradient id=\'g3\' x1=\'1\' y1=\'0\' x2=\'0\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%23385d59\'/><stop offset=\'100%\' stop-color=\'%23e7f0ef\'/></linearGradient></defs><rect width=\'300\' height=\'200\' fill=\'url(%23g3)\'/></svg>')"></div>
+              <div class="acc-summary"><h3>SEO & Analítica</h3><p>Arquitectura temática y dashboard.</p></div>
+              <span class="acc-icon" aria-hidden="true">+</span>
+            </button>
+            <div id="p3" class="acc-panel" role="region" aria-labelledby="btn-p3">
+              <p>Auditoría, clusters y paneles. Más tráfico útil y reporting entendible.</p>
+              <a class="btn btn-primary" href="#" target="_blank" rel="noopener">Ver caso</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2>Contacto</h2>
+          <p class="section-sub">¿Hablamos de tu proyecto? Formulario listo con Formspree.</p>
+        </header>
+        <form class="form reveal" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <label>Nombre<input type="text" name="nombre" required></label>
+          <label>Email<input type="email" name="email" required></label>
+          <label>Mensaje<textarea name="mensaje" rows="5" required></textarea></label>
+          <button class="btn btn-primary" type="submit">Enviar</button>
+        </form>
+        <p class="container hint">Cambia <code>YOUR_FORM_ID</code> por el de tu formulario en Formspree.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container row">
+      <p>© <span id="year"></span> Mario Chaparro</p>
+      <ul class="social">
+        <li><a href="#" aria-label="LinkedIn">LinkedIn</a></li>
+        <li><a href="#" aria-label="X">X</a></li>
+        <li><a href="#" aria-label="Email">Email</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Año dinámico
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Menú móvil
+    const tgl = document.querySelector('.nav-toggle');
+    const menu = document.getElementById('menu');
+    if(tgl){
+      tgl.addEventListener('click',()=>{
+        const exp = tgl.getAttribute('aria-expanded')==='true';
+        tgl.setAttribute('aria-expanded', String(!exp));
+        menu.hidden = exp;
+      });
+    }
+
+    // Animaciones en scroll (reveal)
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target);} });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    // Acordeón accesible
+    document.querySelectorAll('.acc-toggle').forEach(btn=>{
+      const panel = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.addEventListener('click',()=>{
+        const open = btn.getAttribute('aria-expanded')==='true';
+        // Cierra los demás
+        document.querySelectorAll('.acc-toggle[aria-expanded="true"]').forEach(b=>{
+          if(b!==btn){
+            b.setAttribute('aria-expanded','false');
+            const p = document.getElementById(b.getAttribute('aria-controls'));
+            p.style.maxHeight = 0; p.classList.remove('open');
+            b.querySelector('.acc-icon').style.transform = 'rotate(0deg)';
+          }
+        });
+        // Alterna el actual
+        btn.setAttribute('aria-expanded', String(!open));
+        if(!open){
+          panel.classList.add('open');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+          btn.querySelector('.acc-icon').style.transform = 'rotate(45deg)';
+        }else{
+          panel.style.maxHeight = 0; panel.classList.remove('open');
+          btn.querySelector('.acc-icon').style.transform = 'rotate(0deg)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
